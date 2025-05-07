@@ -4,8 +4,8 @@ const Lead = require('../models/lead.model');
 
 // Create a new lead
 router.post('/leads', async (req, res) => {
-  const { firstName, lastName, email, phone, status, source } = req.body;
-  const newLead = new Lead({ firstName, lastName, email, phone, status, source });
+  const { name, email, phone, status, source } = req.body;
+  const newLead = new Lead({ name, email, phone, status, source });
 
   try {
     const lead = await newLead.save();

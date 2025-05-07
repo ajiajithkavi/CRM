@@ -16,7 +16,7 @@ const houseSchema = new mongoose.Schema({
 // Floor 
 const floorSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  houses: [houseSchema]
+  houses: [houseSchema]   
 });
 
 // Phase 
@@ -36,13 +36,15 @@ const projectSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, enum: ['Apartment', 'Villa', 'Commercial'], required: true },
   location: { type: String, required: true },
+
+  
   phases: [phaseSchema],
   villas: [villaSchema]
 
 });
 
-// Builder 
-const builderSchema = new mongoose.Schema({
+// Property 
+const propertySchema = new mongoose.Schema({
   name: { type: String, required: true },
   contactInfo: { type: String },
   phone: { type: String, required: true, match: /^\d{10}$/ },
@@ -50,5 +52,28 @@ const builderSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const Builder = mongoose.model('Builder', builderSchema);
+propertySchema.virtual('tenants', {
+  ref: 'Tenant',
+  localField: '_id',
+  foreignField: 'property'
+});
+
+propertySchema.virtual('maintenanceRequests', {
+  ref: 'MaintenanceRequest',
+  localField: '_id',
+  foreignField: 'property'  
+});
+
+propertySchema.virtual('reports', {
+  ref: 'Report',
+  localField: '_id',
+  foreignField: 'property'
+});
+
+
+// Enable virtuals when converting to JSON or Object
+propertySchema.set('toObject', { virtuals: true });
+propertySchema.set('toJSON', { virtuals: true });
+
+const Builder = mongoose.model('Property', propertySchema);
 module.exports = Builder;

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Builder = require('../models/property.model');
+const Builder = require('../models/propertyModel');
 
 router.post('/builders', async (req, res) => {
     const builder = new Builder({
