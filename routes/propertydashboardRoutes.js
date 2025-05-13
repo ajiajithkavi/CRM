@@ -16,17 +16,23 @@ router.get('/', (req, res) => {
 // View all properties with details
 router.get('/properties', async (req, res) => {
   try {
-    const properties = await Property.find().populate('tenants').populate('maintenanceRequests').populate('reports');
+    const properties = await Property.find();
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
 //  View a specific property by ID
 router.get('/properties/:id', async (req, res) => {
   try {
-    const property = await Property.findById(req.params.id).populate('tenants').populate('maintenanceRequests').populate('reports');
+    const property = await Property.findById(req.params.id);
+
+    if (!property) {
+      return res.status(404).json({ message: 'Property not found' });
+    }
+
     res.json(property);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -52,7 +58,7 @@ router.post('/payment', async (req, res) => {
 });
 
 // View maintenance requests for a property
-router.get('/properties/:propertyId/maintenance', async (req, res) => {
+router.get('/properties/:propertyId/maintenancerequest', async (req, res) => {
   try {
     const maintenanceRequests = await MaintenanceRequest.find({ property: req.params.propertyId }).populate('assignedTo');
     res.json(maintenanceRequests);
@@ -102,15 +108,15 @@ router.get('/calender', async (req, res) => {
   }
 });
 
-// Create a calendar event
-router.post('/calender', async (req, res) => {
-  try {
-    const event = new CalendarEvent(req.body);
-    await event.save();
-    res.status(201).json({ message: 'Calendar event created', event });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// // Create a calendar event
+// router.post('/calender', async (req, res) => {
+//   try {
+//     const event = new CalendarEvent(req.body);
+//     await event.save();
+//     res.status(201).json({ message: 'Calendar event created', event });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 module.exports = router;

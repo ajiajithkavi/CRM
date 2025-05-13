@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
     const maintenanceRequests = await MaintenanceRequest.find()
       .populate('property')
       .populate('assignedTo');
-    res.json(maintenanceRequests);
+    res.json(maintenanceRequests);     
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

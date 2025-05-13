@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Builder = require('../models/propertyModel'); 
+const Property = require('../models/propertyModel'); 
 const User = require('../models/user');
 const Report = require('../models/reportModel');
 const Client = require('../models/clientModel');
@@ -13,54 +13,9 @@ router.get('/', (req, res) => {
     res.status(200).json({ message: 'Welcome to User Dashboard' });
   });
 
-
 router.get('/properties', async (req, res) => {
   try {
-    const builders = await Builder.find();
-    const properties = [];
-
-    builders.forEach(builder => {
-      builder.projects.forEach(project => {
-        if (project.type === 'Apartment' || project.type === 'Commercial') {
-          project.phases.forEach(phase => {
-            phase.floors.forEach(floor => {
-              floor.houses.forEach(house => {
-                properties.push({
-                  builder: builder.name,
-                  project: project.name,
-                  location: project.location,
-                  type: house.type,
-                  name: house.name,
-                  price: house.price,
-                  areaSqFt: house.areaSqFt,
-                  photos: house.photos,
-                  videos: house.videos,
-                  description: house.description
-                });
-              });
-            });
-          });
-        } else if (project.type === 'Villa') {
-          project.villas.forEach(villa => {
-            villa.houses.forEach(house => {
-              properties.push({
-                builder: builder.name,
-                project: project.name,
-                location: project.location,
-                type: house.type,
-                name: house.name,
-                price: house.price,
-                areaSqFt: house.areaSqFt,
-                photos: house.photos,
-                videos: house.videos,
-                description: house.description
-              });
-            });
-          });
-        }
-      });
-    });
-
+    const properties = await Property.find();
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -96,10 +51,10 @@ router.post('/wishlist/remove/:userId', async (req, res) => {
   }
 });
 
-// User Inquiries (Reports)
-router.get('/reports/:leadId', async (req, res) => {
+// List of Reports
+router.get('/report', async (req, res) => {
   try {
-    const reports = await Report.find({ lead: req.params.leadId });
+    const reports = await Report.find();
     res.json(reports);
   } catch (error) {
     res.status(500).json({ message: error.message });
