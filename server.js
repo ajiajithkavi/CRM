@@ -68,7 +68,9 @@ app.get('/', (req, res) => res.send("Welcome to Node Auth API"));
 
 
 
-app.listen(4000, () => {
-    console.log('Server is running on http://localhost:4000');
- });
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
  
