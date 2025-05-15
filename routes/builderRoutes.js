@@ -39,7 +39,7 @@ router.put('/:id', async (req, res) => {
     try {
         const updatedBuilder = await Builder.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedBuilder) return res.status(404).json({ error: 'Builder not found' });
-        res.json(updatedBuilder);
+        res.json({message: 'builder updated successfully',updatedBuilder});
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

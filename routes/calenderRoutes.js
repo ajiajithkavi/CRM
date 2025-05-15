@@ -22,4 +22,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Update event
+
+router.put('/:id', async (req, res) => {
+  try{
+    const event = await Event.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    if (!event) return res.status(404).json({ error: 'Event not found'});
+    res.json({ message: 'Event updated', event});
+
+  } catch (err) {
+    res.status(500).json({ error: err.message});
+  }
+});
+
 module.exports = router; 

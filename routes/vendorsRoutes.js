@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const updatedVendor = await Vendor.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedVendor);
+    res.json({ message: 'Vendor updated successfully', updatedVendor});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

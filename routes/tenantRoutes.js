@@ -55,7 +55,7 @@ router.put('/:tenantId', async (req, res) => {
     );
 
     if (!updatedTenant) return res.status(404).json({ error: 'Tenant not found' });
-    res.json(updatedTenant);
+    res.json({ message: 'Tenant updated successfully', updatedTenant});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

@@ -1,6 +1,7 @@
-{const express = require('express');
-    const router = express.Router();
-    const RentalPayment = require('../models/rentalpaymentModel'); 
+{
+   const express = require('express');
+   const router = express.Router();
+   const RentalPayment = require('../models/rentalpaymentModel'); 
     
     // Create a new rental payment
     router.post('/', async (req, res) => {
@@ -64,7 +65,7 @@
           return res.status(404).json({ error: 'Rental payment not found' });
         }
     
-        res.json(updatedPayment);
+        res.json({message: 'Rental payment updated successfully', updatedPayment});
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
@@ -84,6 +85,6 @@
         res.status(500).json({ error: err.message });
       }
     });
-    
-    module.exports = router;
-    } 
+
+  module.exports = router;
+}

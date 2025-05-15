@@ -41,7 +41,7 @@ router.post('/inquire/:clientId/:propertyId', async (req, res) => {
   }
 });
 
-router.get('/calendar/:clientId', async (req, res) => {
+router.get('/calender/:clientId', async (req, res) => {
   try {
     const events = await CalendarEvent.find({ clientId: req.params.clientId });
     res.json(events);
