@@ -11,7 +11,7 @@ const propertySchema = new mongoose.Schema({
   
   price: {
     amount: { type: Number, required: true },
-    currency: { type: String, default: 'INR' }
+    // currency: { type: String, default: 'INR' }
   },
 
   minPrice: { type: Number },                                
