@@ -3,7 +3,7 @@ const router = express.Router();
 const Property = require('../models/propertyModel');
 
 // Create a new property
-  router.post('/post/', async (req, res) => {
+  router.post('/post', async (req, res) => {
     try {
       console.log("Request body:", req.body);
       const property = new Property(req.body );
@@ -15,7 +15,7 @@ const Property = require('../models/propertyModel');
   });
 
 // Get all properties
-router.get('/', async (req, res) => {
+router.get('/get', async (req, res) => {
   try {
     const properties = await Property.find().sort({ createdAt: -1 });
     res.json(properties);
