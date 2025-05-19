@@ -1,48 +1,47 @@
 const mongoose = require('mongoose');
 
 const propertySchema = new mongoose.Schema({
-  title: { type: String, required: true },                   
-  name: { type: String, required: true },                     
-  address: { type: String, required: true },                   
-  type: { type: String, enum: ['Apartment', 'Villa', 'Plot'], required: true },
-  location: { type: String, required: true },
-  status: { type: String, enum: ['Available', 'Sold', 'Booked'], default: 'Available' },
-  listingType: { type: String, enum: ['Sale', 'Rent'], default: 'Sale' },  
+    title: { type: String },                                       
+    address: { type: String },                   
+    propertytype: { type: String, enum: ['Apartment', 'Villa', 'Plot'] },
+   location: { type: String},
   
-  price: {
-    amount: { type: Number, required: true },
-    // currency: { type: String, default: 'INR' }
-  },
+   listingType: { type: String, enum: ['Sale', 'Rent'], default: 'Sale' },  
+  
+   price: { type: Number},
+  
 
-  minPrice: { type: Number },                                
-  maxPrice: { type: Number },                                 
+    minPrice: { type: Number },                                
+    maxPrice: { type: Number },                                 
 
-  builderName: { type: String },                               
+    builderName: { type: String },                               
 
-  propertyImage: [String],                                     
+    propertyImage: [String],                                     
 
-  bedrooms: { type: Number, default: 0 },                      
-  bathrooms: { type: Number, default: 0 },                    
-  squareFeet: { type: Number },                                
-  units: { type: Number },                                     
-  kitchen: { type: Number, default: 0 },                      
+    bedrooms: { type: Number },                      
+    bathrooms: { type: Number },                    
+    squareFeet: { type: Number },                                
+    units: { type: Number },                                     
+    kitchen: { type: Number, default: 0 },                      
 
-  carpetArea: { type: Number },                               
-  sizes: { type: String },                                   
+    carpetArea: { type: Number },                               
+    sizes: { type: String },                                   
 
-  phase: { type: String },                                  
-  floor: { type: String },                                 
-  mapViewLink: { type: String },                           
-  videoURL: { type: String },                          
+    phase: { type: String },                                  
+    floor: { type: String },                                 
+    mapViewLink: { type: String },                           
+    videoURL: { type: String },
+    keyAmenities: { type: String},                          
 
-  principalInterest: { type: String },                  
-  propertyTaxes: { type: Number },                       
-  downPayment: { type: Number },                               
-  homeownersInsurance: { type: Number },                  
-  loanDetails: { type: String },    
-  description: { type: String },                      
+    principalInterest: { type: String },                  
+    propertyTaxes: { type: Number },                       
+    downPayment: { type: Number },                               
+    homeownersInsurance: { type: Number }, 
+   homePrice: { type: String } ,               
+    loanDetails: { type: String },    
+    description: { type: String },                      
 
-  features: [String],
+ 
 
   tenants: [{
     type: mongoose.Schema.Types.ObjectId,
