@@ -38,10 +38,12 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/login", async (req, res) => {
-    try {
-    const { identifier, password } = req.body; // `identifier` can be username or email
 
+router.post("/login", async (req, res) => {
+  try {
+    const { identifier, password } = req.body; // identifier can be username or email
+
+    // Validate input
     if (!identifier || !password) {
       return res.status(400).json({ msg: "Username or email and password are required" });
     }
@@ -55,21 +57,45 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ msg: "User not found" });
     }
 
-        // Check if password is correct
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-
-        // Generate JWT Token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-        // Send response
-        res.status(200).json({ msg: "Login successful", token });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Server error" });
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid credentials" });
     }
+
+    // Check if role is one of the valid roles (optional validation)
+    const validRoles = ['user', 'admin', 'superAdmin', 'directBuilder'];
+    if (!validRoles.includes(user.role)) {
+      return res.status(403).json({ msg: "Invalid user role" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET || "your_secret_key",
+      { expiresIn: "1h" }
+    );
+
+    // Respond with token and user info
+    res.status(200).json({
+      msg: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ msg: "Server error" });
+  }
 });
+
+module.exports = router;
+
 
 // Google Authentication
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
