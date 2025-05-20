@@ -40,11 +40,11 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username,email, password } = req.body;
 
         // Check if email and password are provided
-        if (!email || !password) {
-            return res.status(400).json({ msg: "Email and password are required" });
+        if (!username || !email || !password) {
+            return res.status(400).json({ msg: "username, Email and password are required" });
         }
 
         // Find the user in the database

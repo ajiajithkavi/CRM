@@ -3,16 +3,19 @@ const router = express.Router();
 const Property = require('../models/propertyModel');
 
 // Create a new property
-  router.post('/post', async (req, res) => {
-    try {
-      console.log("Request body:", req.body);
-      const property = new Property(req.body );
-      await property.save();
-      res.status(201).json(property);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  });
+router.post('/post', async (req, res) => {
+  try {
+    console.log("Request body:", req.body);
+
+    const property = new Property(req.body);
+    const savedProperty = await property.save();
+
+    res.status(201).json(savedProperty);
+  } catch (err) {
+    console.error("Error saving property:", err);
+    res.status(400).json({ error: err.message });
+  }
+});
 
 // Get all properties
 router.get('/get', async (req, res) => {

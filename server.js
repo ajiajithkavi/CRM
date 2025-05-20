@@ -30,12 +30,13 @@ const propertydashboardRoutes = require('./routes/propertydashboardRoutes');
 const app = express();
 
 app.use(cors()); 
+app.use(express.json());
 
 
 // Connect to MongoDB
 connectDB();
 
-app.use(express.json());
+
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
