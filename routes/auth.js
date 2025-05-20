@@ -48,7 +48,9 @@ router.post("/login", async (req, res) => {
         }
 
         // Find the user in the database
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ $or: [
+                          { username },
+                          { email } ]});
         if (!user) return res.status(400).json({ msg: "User not found" });
 
         // Check if password is correct
