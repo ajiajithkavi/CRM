@@ -34,24 +34,26 @@ router.post("/register", async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Server error" });
+        res.status(500).json({ msg: "Server error" });  
     }
 });
 
 router.post("/login", async (req, res) => {
     try {
-        const { username,email, password } = req.body;
+    const { identifier, password } = req.body; // `identifier` can be username or email
 
-        // Check if email and password are provided
-        if (!username || !email || !password) {
-            return res.status(400).json({ msg: "username, Email and password are required" });
-        }
+    if (!identifier || !password) {
+      return res.status(400).json({ msg: "Username or email and password are required" });
+    }
 
-        // Find the user in the database
-        const user = await User.findOne({ $or: [
-                          { username },
-                          { email } ]});
-        if (!user) return res.status(400).json({ msg: "User not found" });
+    // Find user by either username or email
+    const user = await User.findOne({
+      $or: [{ username: identifier }, { email: identifier }]
+    });
+
+    if (!user) {
+      return res.status(400).json({ msg: "User not found" });
+    }
 
         // Check if password is correct
         const isMatch = await bcrypt.compare(password, user.password);
