@@ -7,116 +7,108 @@ require('dotenv').config();
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        //  Validate email and password
-        if (!email || !password) {
-            return res.status(400).json({ msg: "Email and password are required" });
-        }
-
-        // Check if the user already exists
-        let user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ msg: "User already exists" });
-        }
-
-        // Hash the password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create new user in the database
-        user = new User({ email, password: hashedPassword });
-        await user.save();
-
-        // Send response after successful registration
-        res.status(201).json({ msg: "User registered successfully" });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Server error" });  
-    }
-});
-
-
-router.post("/login", async (req, res) => {
+// 🔹 Register User
+router.post('/register', async (req, res) => {
   try {
-    const { identifier, password } = req.body; // identifier can be username or email
+    const { email, username, password, role, phone, companyName } = req.body;
 
-    // Validate input
-    if (!identifier || !password) {
-      return res.status(400).json({ msg: "Username or email and password are required" });
+    if (!email || !password || !username || !role) {
+      return res.status(400).json({ msg: 'All required fields must be provided' });
     }
 
-    // Find user by either username or email
-    const user = await User.findOne({
-      $or: [{ username: identifier }, { email: identifier }]
+    // Role-specific validation
+    if (role === 'directBuilder' && !companyName) {
+      return res.status(400).json({ msg: 'DirectBuilder must have companyName' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ msg: 'User already exists' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      email,
+      username,
+      password: hashedPassword,
+      role,
+      phone,
+      companyName,
     });
 
-    if (!user) {
-      return res.status(400).json({ msg: "User not found" });
+    await newUser.save();
+    res.status(201).json({ msg: 'User registered successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// 🔹 Login User
+router.post('/login', async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
+
+    if (!identifier || !password) {
+      return res.status(400).json({ msg: 'Username or email and password are required' });
     }
 
-    // Check password
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }],
+    });
+
+    if (!user) return res.status(400).json({ msg: 'User not found' });
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid credentials" });
-    }
+    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
-    // Check if role is one of the valid roles (optional validation)
-    const validRoles = ['user', 'admin', 'superAdmin', 'directBuilder'];
-    if (!validRoles.includes(user.role)) {
-      return res.status(403).json({ msg: "Invalid user role" });
-    }
-
-    // Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET || "your_secret_key",
-      { expiresIn: "1h" }
+      process.env.JWT_SECRET || 'your_jwt_secret',
+      { expiresIn: '1h' }
     );
 
-    // Respond with token and user info
     res.status(200).json({
-      msg: "Login successful",
+      msg: 'Login successful',
       token,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
-
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ msg: "Server error" });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ msg: 'Server error' });
   }
 });
 
-module.exports = router;
-
-
-// Google Authentication
+// 🔹 Google Auth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login', successRedirect: '/' }));
 
-// Logout
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    res.redirect('/'); // or send token from here
+  }
+);
+
+// 🔹 Logout
 router.get('/logout', (req, res) => {
-    req.logout(() => {
-        res.redirect('/');
-    });
+  req.logout(() => {
+    res.redirect('/');
+  });
 });
 
-
-// Get All Users
+// 🔹 Get All Users
 router.get('/users', async (req, res) => {
-    try {
-        const users = await User.find().select('-password'); // Exclude passwords
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ msg: "Error fetching users" });
-    }
+  try {
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ msg: 'Error fetching users' });
+  }
 });
 
 module.exports = router;
