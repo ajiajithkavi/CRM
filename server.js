@@ -6,6 +6,8 @@ require('./config/passport');
 const cors = require('cors'); //  Allow frontend to access backend
 require('dotenv').config();
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 // Import routes
 const BookRoutes = require('./routes/Booking');
 const passwordRoutes = require('./routes/password');

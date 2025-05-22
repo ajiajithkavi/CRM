@@ -47,7 +47,8 @@ router.post('/signup', async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: 'user'  
+      role: 'user' ,
+      isActive: true 
     });
 
     await newUser.save();
@@ -82,7 +83,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({
       $or: [{ email: identifier }, { username: identifier }]
     });
-    if (!user || !user.isActive) {
+    if (!user) {
       return res.status(404).json({ message: 'User not found or inactive' });
     }
     const isMatch = await bcrypt.compare(password, user.password);

@@ -7,7 +7,7 @@ const Project = require('../models/Property/Project.model');
 const Building = require('../models/Property/Building.model');
 const Floor = require('../models/Property/Floor.model');
 const Unit = require('../models/Property/Unit.model');
-const { authenticate } = require('../middleware/auth');
+
 
 // GET all builders with nested projects, buildings, floors, and units
 router.get('/', async (req, res) => {

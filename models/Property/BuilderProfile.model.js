@@ -15,7 +15,7 @@ const builderProfileSchema = new mongoose.Schema({
   gallery:         [ mediaSchema ],          
   website:         { type: String },
   email:           { type: String },
-  phone:           { type: String },
+  phone:           { type: String }, 
   address: {
     street:        { type: String },
     city:          { type: String },
