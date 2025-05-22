@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Enquiry = require('../models/enquiryModel');
+const { authenticate } = require('../middleware/auth');
 
 
 // Create new enquiry
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const newEnquiry = new Enquiry(req.body);
     await newEnquiry.save();
@@ -37,7 +38,7 @@ router.get('/:id', async (req, res) => {
 
 
 // Update enquiry by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   try {
     const updatedEnquiry = await Enquiry.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedEnquiry) return res.status(404).json({ error: 'Enquiry not found' });
@@ -48,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete enquiry by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
   try {
     const deletedEnquiry = await Enquiry.findByIdAndDelete(req.params.id);
     if (!deletedEnquiry) return res.status(404).json({ error: 'Enquiry not found' });

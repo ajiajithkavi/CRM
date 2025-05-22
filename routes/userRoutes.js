@@ -4,6 +4,7 @@ const Property = require('../models/propertyModel');
 const Lead = require('../models/lead.model');
 const Client = require('../models/clientModel');
 const CalendarEvent = require('../models/calenderModel');
+const { authenticate } = require('../middleware/auth');
 
 router.get('/saved-properties/:clientId', async (req, res) => {
   try {
@@ -17,7 +18,7 @@ router.get('/saved-properties/:clientId', async (req, res) => {
   }
 });
 
-router.post('/inquire/:clientId/:propertyId', async (req, res) => {
+router.post('/inquire/:clientId/:propertyId', authenticate, async (req, res) => {
   const { message, status } = req.body;
   try {
     const client = await Client.findById(req.params.clientId);

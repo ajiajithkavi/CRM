@@ -7,6 +7,7 @@ const Report = require('../models/reportModel');
 const Client = require('../models/clientModel');
 const CalendarEvent = require('../models/calenderModel'); 
 const mongoose = require('mongoose');
+const { authenticate } = require('../middleware/auth');
 
 
 router.get('/', (req, res) => {
@@ -23,7 +24,7 @@ router.get('/properties', async (req, res) => {
 });
 
 // Saved Properties
-router.post('/wishlist/save/:userId', async (req, res) => {
+router.post('/wishlist/save/:userId', authenticate, async (req, res) => {
   const { propertyId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -37,7 +38,7 @@ router.post('/wishlist/save/:userId', async (req, res) => {
   }
 });
 
-router.post('/wishlist/remove/:userId', async (req, res) => {
+router.post('/wishlist/remove/:userId', authenticate, async (req, res) => {
   const { propertyId } = req.body;
   try {
     const user = await User.findByIdAndUpdate(
@@ -81,7 +82,7 @@ router.get('/calender', async (req, res) => {
   }
 });
 
-router.post('/calender', async (req, res) => {
+router.post('/calender', authenticate, async (req, res) => {
   try {
     const event = new CalendarEvent(req.body);
     await event.save();

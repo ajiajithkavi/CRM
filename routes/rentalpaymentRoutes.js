@@ -2,9 +2,10 @@
    const express = require('express');
    const router = express.Router();
    const RentalPayment = require('../models/rentalpaymentModel'); 
+   const { authenticate } = require('../middleware/auth');
     
     // Create a new rental payment
-    router.post('/', async (req, res) => {
+    router.post('/', authenticate, async (req, res) => {
       try {
         const { tenant, amount, paymentDate, status } = req.body;
     
@@ -50,7 +51,7 @@
     });
     
     // Update a rental payment
-    router.put('/:paymentId', async (req, res) => {
+    router.put('/:paymentId', authenticate, async (req, res) => {
       try {
         const { amount, paymentDate, status } = req.body;
     
@@ -72,7 +73,7 @@
     });
     
     // Delete a rental payment
-    router.delete('/:paymentId', async (req, res) => {
+    router.delete('/:paymentId', authenticate, async (req, res) => {
       try {
         const deletedPayment = await RentalPayment.findByIdAndDelete(req.params.paymentId);
     

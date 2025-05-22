@@ -8,6 +8,7 @@ const MaintenanceRequest = require('../models/maintenancerequestModel');
 const Report = require('../models/reportModel');
 const CalendarEvent = require('../models/calenderModel');
 const Vendor = require('../models/vendorsModel');
+const { authenticate } = require('../middleware/auth');
 
 router.get('/', (req, res) => {
     res.status(200).json({ message: 'Welcome to Property Dashboard' });
@@ -40,7 +41,7 @@ router.get('/properties/:id', async (req, res) => {
 });
 
 // Create rental payment for a tenant
-router.post('/payment', async (req, res) => {
+router.post('/payment', authenticate, async (req, res) => {
   try {
     const { tenantId, amount, paymentDate } = req.body;
     const rentalPayment = new RentalPayment({
@@ -68,7 +69,7 @@ router.get('/properties/:propertyId/maintenancerequest', async (req, res) => {
 });
 
 // Create maintenance request for a property
-router.post('/maintenance', async (req, res) => {
+router.post('/maintenance', authenticate, async (req, res) => {
   const { propertyId, description } = req.body;
   try {
     const maintenanceRequest = new MaintenanceRequest({
@@ -84,7 +85,7 @@ router.post('/maintenance', async (req, res) => {
 });
 
 // Assign vendor to maintenance request
-router.put('/maintenance/:requestId/assign', async (req, res) => {
+router.put('/maintenance/:requestId/assign', authenticate, async (req, res) => {
   try {
     const { vendorId } = req.body;
     const maintenanceRequest = await MaintenanceRequest.findByIdAndUpdate(

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Client = require('../models/clientModel');
+const { authenticate } = require('../middleware/auth');
 
 //  Create a new client
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const client = new Client(req.body);
     await client.save();
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update client by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   try {
     const client = await Client.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!client) return res.status(404).json({ message: 'Client not found' });
@@ -46,7 +47,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //  Delete client by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
   try {
     const client = await Client.findByIdAndDelete(req.params.id);
     if (!client) return res.status(404).json({ message: 'Client not found' });

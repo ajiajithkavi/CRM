@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Tenant = require('../models/tenantModel');
+const { authenticate } = require('../middleware/auth');
 
 // Create a new tenant
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const tenant = new Tenant({
       name: req.body.name,
@@ -41,7 +42,7 @@ router.get('/:tenantId', async (req, res) => {
 });
 
 // Update tenant details
-router.put('/:tenantId', async (req, res) => {
+router.put('/:tenantId', authenticate, async (req, res) => {
   try {
     const updatedTenant = await Tenant.findByIdAndUpdate(
       req.params.tenantId,
@@ -62,7 +63,7 @@ router.put('/:tenantId', async (req, res) => {
 });
 
 // Delete a tenant
-router.delete('/:tenantId', async (req, res) => {
+router.delete('/:tenantId', authenticate, async (req, res) => {
   try {
     const deletedTenant = await Tenant.findByIdAndDelete(req.params.tenantId);
     if (!deletedTenant) return res.status(404).json({ error: 'Tenant not found' });

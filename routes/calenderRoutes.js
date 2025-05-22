@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/calenderModel');
+const { authenticate } = require('../middleware/auth');
 
 // Create calendar event
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const event = await Event.create(req.body);
     res.json({ message: 'Event created', event });
@@ -24,7 +25,7 @@ router.get('/', async (req, res) => {
 
 // Update event
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   try{
     const event = await Event.findByIdAndUpdate(req.params.id, req.body, {new: true});
     if (!event) return res.status(404).json({ error: 'Event not found'});

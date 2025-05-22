@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/bookings');
+const { authenticate } = require('../middleware/auth');
 
 
-router.post('/book', async (req, res) => {
+router.post('/book', authenticate,async (req, res) => {
     try {
         const { firstName, lastName, country, city, streetAddress,zipCode, email, phone, note } = req.body;
 
@@ -45,7 +46,7 @@ router.get('/list', async (req, res) => {
 
 
 //edit
-router.put('/book/:id', async( req, res) => {
+router.put('/book/:id', authenticate, async( req, res) => {
     try {
         const Id = req.params.id;
         const updatedata = req.body;
@@ -66,7 +67,7 @@ router.put('/book/:id', async( req, res) => {
 
 //delete
 
-router.delete('/book/:id', async (req, res) => {
+router.delete('/book/:id', authenticate, async (req, res) => {
     try{
         const Id = req.params.id;
 

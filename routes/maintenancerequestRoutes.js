@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const MaintenanceRequest = require('../models/maintenancerequestModel'); 
+const { authenticate } = require('../middleware/auth');
 
 // Create a new maintenance request
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const { property, description, assignedTo } = req.body;
 
@@ -51,7 +52,7 @@ router.get('/:requestId', async (req, res) => {
 });
 
 // Update a maintenance request
-router.put('/:requestId', async (req, res) => {
+router.put('/:requestId', authenticate, async (req, res) => {
   try {
     const { status, assignedTo } = req.body;
 
@@ -74,7 +75,7 @@ router.put('/:requestId', async (req, res) => {
 });
 
 // Delete a maintenance request
-router.delete('/:requestId', async (req, res) => {
+router.delete('/:requestId', authenticate, async (req, res) => {
   try {
     const deletedRequest = await MaintenanceRequest.findByIdAndDelete(req.params.requestId);
 

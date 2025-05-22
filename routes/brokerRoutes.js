@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Broker = require('../models/brokerModel');
+const { authenticate } = require('../middleware/auth');
 
 // Create broker
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const broker = await Broker.create(req.body);
     res.json({ message: 'Broker added', broker });
@@ -36,7 +37,7 @@ router.get('/:id', async (req, res) => {
 
 // update broker
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   try{
     const broker = await Broker.findByIdAndUpdate(req.params.id, req.body);
     if (!broker) return res. status(404).json({ error: 'brker not found'});
@@ -48,7 +49,7 @@ router.put('/:id', async (req, res) => {
 
 //Delete broker
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
   try {
     const broker = await Broker.findByIdAndDelete(req.params.id);
     if (!broker) return res.status(404).json({error: 'broker not found'});

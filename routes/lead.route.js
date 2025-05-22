@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Lead = require('../models/lead.model');
+const { authenticate } = require('../middleware/auth');
 
 // Create a new lead
-router.post('/leads', async (req, res) => {
+router.post('/leads', authenticate, async (req, res) => {
   const { name, email, phone, status, source } = req.body;
   const newLead = new Lead({ name, email, phone, status, source });
 
@@ -37,7 +38,7 @@ router.get('/leads/:leadId', async (req, res) => {
   });
   
   // Update a lead's information
-  router.put('/leads/:leadId', async (req, res) => {
+  router.put('/leads/:leadId', authenticate, async (req, res) => {
     try {
       const updatedLead = await Lead.findByIdAndUpdate(req.params.leadId, req.body, { new: true });
       if (!updatedLead) return res.status(404).json({ error: 'Lead not found' });
@@ -48,7 +49,7 @@ router.get('/leads/:leadId', async (req, res) => {
   });
 
   // Delete a lead
-  router.delete('/leads/:leadId', async (req,res) => {
+  router.delete('/leads/:leadId', authenticate, async (req,res) => {
     try{
         const deletedLead = await Lead.findByIdAndDelete(req.params.leadId);
         if(!deletedLead) return res.status(404).json({ error: 'Lead not found'});

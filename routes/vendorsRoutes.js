@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Vendor = require('../models/vendorsModel');
+const { authenticate } = require('../middleware/auth');
 
 // Create a new vendor
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const newVendor = new Vendor(req.body);
     const savedVendor = await newVendor.save();
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update vendor
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   try {
     const updatedVendor = await Vendor.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json({ message: 'Vendor updated successfully', updatedVendor});
@@ -45,7 +46,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete vendor
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
   try {
     await Vendor.findByIdAndDelete(req.params.id);
     res.json({ message: 'Vendor deleted successfully' });

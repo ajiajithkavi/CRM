@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Builder = require('../models/builderModel'); 
+const { authenticate } = require('../middleware/auth');
 
 // Create a new builder
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
     try {
         const newBuilder = new Builder(req.body);
         const saved = await newBuilder.save();
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update builder
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
     try {
         const updatedBuilder = await Builder.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedBuilder) return res.status(404).json({ error: 'Builder not found' });
@@ -46,7 +47,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete builder
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const deletedBuilder = await Builder.findByIdAndDelete(req.params.id);
         if (!deletedBuilder) return res.status(404).json({ error: 'Builder not found' });

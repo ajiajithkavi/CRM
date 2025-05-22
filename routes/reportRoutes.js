@@ -3,11 +3,12 @@
   const Report = require('../models/reportModel');
   const Lead = require('../models/lead.model');
   const Property = require('../models/propertyModel');
+  const { authenticate } = require('../middleware/auth');
 
 
   // Create a new Report
 
-  router.post('/', async (req, res) => {
+  router.post('/', authenticate, async (req, res) => {
     try {
       const { lead, date, details } = req.body;
       const newReport = new Report({ lead, date, details });
@@ -47,7 +48,7 @@
 
   // Update a Report by ID
 
-  router.put('/:reportId', async (req, res) => {
+  router.put('/:reportId', authenticate, async (req, res) => {
     try {
       const { lead, date, details } = req.body;
       const updatedReport = await Report.findByIdAndUpdate(
@@ -69,7 +70,7 @@
 
   // Delete a Report by ID
 
-  router.delete('/:reportId', async (req, res) => {
+  router.delete('/:reportId', authenticate, async (req, res) => {
     try {
       const deletedReport = await Report.findByIdAndDelete(req.params.reportId);
       if (!deletedReport) {
